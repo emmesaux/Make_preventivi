@@ -13,6 +13,36 @@
         <label for="nomeCliente">Nome del cliente:</label>
         <input type="text" id="nomeCliente" name="nomeCliente" required><br><br>
 
+        <!-- Inserisci costi personalizzati -->
+        <label for="costoBase">Costo base:</label>
+        <input type="number" id="costoBase" name="costoBase" value="500" required><br><br>
+
+        <label for="costoWordpress">Costo WordPress:</label>
+        <input type="number" id="costoWordpress" name="costoWordpress" value="300" required><br><br>
+
+        <label for="costoCodice">Costo Codice:</label>
+        <input type="number" id="costoCodice" name="costoCodice" value="600" required><br><br>
+
+        <label for="costoSeo">Costo SEO:</label>
+        <input type="number" id="costoSeo" name="costoSeo" value="200" required><br><br>
+
+        <label for="costoHosting">Costo Hosting:</label>
+        <input type="number" id="costoHosting" name="costoHosting" value="100" required><br><br>
+
+        <!-- Costi per tipo di sito -->
+        <label for="costoBlog">Costo Blog:</label>
+        <input type="number" id="costoBlog" name="costoBlog" value="200" required><br><br>
+
+        <label for="costoEcommerce">Costo E-commerce:</label>
+        <input type="number" id="costoEcommerce" name="costoEcommerce" value="1000" required><br><br>
+
+        <label for="costoPortfolio">Costo Portfolio:</label>
+        <input type="number" id="costoPortfolio" name="costoPortfolio" value="400" required><br><br>
+
+        <label for="costoAltro">Costo Altro:</label>
+        <input type="number" id="costoAltro" name="costoAltro" value="600" required><br><br>
+
+        <!-- Selezione tipo di sito -->
         <label for="tipoSito">Tipo di sito:</label>
         <select id="tipoSito" name="tipoSito" onchange="toggleAltroInput()" required>
             <option value="blog">Blog</option>
@@ -26,12 +56,14 @@
             <input type="text" id="specificaAltro" name="specificaAltro"><br><br>
         </div>
 
+        <!-- Selezione piattaforma -->
         <label for="piattaforma">Piattaforma:</label>
         <input type="radio" id="wordpress" name="piattaforma" value="WordPress" required>
         <label for="wordpress">WordPress</label>
         <input type="radio" id="codice" name="piattaforma" value="Codice" required>
         <label for="codice">Codice normale</label><br><br>
 
+        <!-- SEO e hosting -->
         <label for="seo">SEO:</label>
         <input type="radio" id="seo_si" name="seo" value="si" required>
         <label for="seo_si">Sì</label>
@@ -44,6 +76,7 @@
         <input type="radio" id="hosting_no" name="hosting" value="no" required>
         <label for="hosting_no">No</label><br><br>
 
+        <!-- Descrizione progetto -->
         <label for="descrizione">Descrizione del progetto:</label><br>
         <textarea id="descrizione" name="descrizione" rows="4" cols="50"
             placeholder="Inserisci una descrizione del progetto..."></textarea><br><br>
