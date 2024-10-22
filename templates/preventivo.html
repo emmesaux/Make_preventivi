@@ -1,100 +1,301 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Preventivo Sito Web</title>
+    <title>Genera Preventivo</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .form-control {
+            margin-bottom: 20px;
+        }
+
+        .custom-header {
+            background-color: #007bff;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-radius: 5px;
+        }
+
+        .btn-primary {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+
+        .btn-primary:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+
+        .custom-input-text {
+            display: none;
+        }
+
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            color: #6c757d;
+        }
+
+        .price-display {
+            margin-top: 30px;
+        }
+
+        .price-box {
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: #28a745;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 100%;
+            background-color: #f8f9fa;
+            border-left: 2px solid #007bff;
+            padding: 20px;
+            display: none;
+        }
+
+        .sidebar h4 {
+            text-align: center;
+            color: #007bff;
+        }
+
+        .sidebar .form-group {
+            margin-bottom: 15px;
+        }
+    </style>
 </head>
 
 <body>
-    <h1>Preventivo per Sviluppatori Web</h1>
-    <form action="/submit" method="POST">
-        <label for="nomeCliente">Nome del cliente:</label>
-        <input type="text" id="nomeCliente" name="nomeCliente" required><br><br>
 
-        <!-- Inserisci costi personalizzati -->
-        <label for="costoBase">Costo base:</label>
-        <input type="number" id="costoBase" name="costoBase" value="500" required><br><br>
-
-        <label for="costoWordpress">Costo WordPress:</label>
-        <input type="number" id="costoWordpress" name="costoWordpress" value="300" required><br><br>
-
-        <label for="costoCodice">Costo Codice:</label>
-        <input type="number" id="costoCodice" name="costoCodice" value="600" required><br><br>
-
-        <label for="costoSeo">Costo SEO:</label>
-        <input type="number" id="costoSeo" name="costoSeo" value="200" required><br><br>
-
-        <label for="costoHosting">Costo Hosting:</label>
-        <input type="number" id="costoHosting" name="costoHosting" value="100" required><br><br>
-
-        <!-- Costi per tipo di sito -->
-        <label for="costoBlog">Costo Blog:</label>
-        <input type="number" id="costoBlog" name="costoBlog" value="200" required><br><br>
-
-        <label for="costoEcommerce">Costo E-commerce:</label>
-        <input type="number" id="costoEcommerce" name="costoEcommerce" value="1000" required><br><br>
-
-        <label for="costoPortfolio">Costo Portfolio:</label>
-        <input type="number" id="costoPortfolio" name="costoPortfolio" value="400" required><br><br>
-
-        <label for="costoAltro">Costo Altro:</label>
-        <input type="number" id="costoAltro" name="costoAltro" value="600" required><br><br>
-
-        <!-- Selezione tipo di sito -->
-        <label for="tipoSito">Tipo di sito:</label>
-        <select id="tipoSito" name="tipoSito" onchange="toggleAltroInput()" required>
-            <option value="blog">Blog</option>
-            <option value="e-commerce">E-commerce</option>
-            <option value="portfolio">Portfolio</option>
-            <option value="altro">Altro</option>
-        </select><br><br>
-
-        <div id="altroInput" style="display:none;">
-            <label for="specificaAltro">Specifica del sito:</label>
-            <input type="text" id="specificaAltro" name="specificaAltro"><br><br>
+    <div class="container">
+        <div class="custom-header">
+            <h1>Genera il tuo preventivo</h1>
+            <p>Compila i campi per creare un preventivo personalizzato</p>
         </div>
 
-        <!-- Selezione piattaforma -->
-        <label for="piattaforma">Piattaforma:</label>
-        <input type="radio" id="wordpress" name="piattaforma" value="WordPress" required>
-        <label for="wordpress">WordPress</label>
-        <input type="radio" id="codice" name="piattaforma" value="Codice" required>
-        <label for="codice">Codice normale</label><br><br>
+        <form id="preventivoForm" action="/submit" method="POST">
+            <div class="form-group">
+                <label for="nomeCliente">Nome del cliente:</label>
+                <input type="text" class="form-control" id="nomeCliente" name="nomeCliente"
+                    placeholder="Inserisci il nome del cliente" required>
+            </div>
 
-        <!-- SEO e hosting -->
-        <label for="seo">SEO:</label>
-        <input type="radio" id="seo_si" name="seo" value="si" required>
-        <label for="seo_si">Sì</label>
-        <input type="radio" id="seo_no" name="seo" value="no" required>
-        <label for="seo_no">No</label><br><br>
+            <div class="form-group">
+                <label for="tipoSito">Tipo di sito:</label>
+                <select class="form-select" id="tipoSito" name="tipoSito" required>
+                    <option value="" data-prezzo="0" disabled selected>Seleziona il tipo di sito</option>
+                    <option value="blog" data-prezzo="500">Blog (500€)</option>
+                    <option value="e-commerce" data-prezzo="1200">E-commerce (1200€)</option>
+                    <option value="portfolio" data-prezzo="800">Portfolio (800€)</option>
+                    <option value="altro" data-prezzo="0">Altro</option>
+                </select>
+            </div>
 
-        <label for="hosting">Gestione hosting:</label>
-        <input type="radio" id="hosting_si" name="hosting" value="si" required>
-        <label for="hosting_si">Sì</label>
-        <input type="radio" id="hosting_no" name="hosting" value="no" required>
-        <label for="hosting_no">No</label><br><br>
+            <div class="form-group custom-input-text" id="altroInput">
+                <label for="altroSito">Descrivi il tipo di sito:</label>
+                <input type="text" class="form-control" id="altroSito" name="altroSito" placeholder="Descrivi il sito">
+            </div>
 
-        <!-- Descrizione progetto -->
-        <label for="descrizione">Descrizione del progetto:</label><br>
-        <textarea id="descrizione" name="descrizione" rows="4" cols="50"
-            placeholder="Inserisci una descrizione del progetto..."></textarea><br><br>
+            <div class="form-group">
+                <label for="piattaforma">Piattaforma preferita:</label>
+                <select class="form-select" id="piattaforma" name="piattaforma" required>
+                    <option value="" data-prezzo="0" disabled selected>Seleziona la piattaforma</option>
+                    <option value="WordPress" data-prezzo="300">WordPress (300€)</option>
+                    <option value="Codice personalizzato" data-prezzo="600">Codice personalizzato (600€)</option>
+                </select>
+            </div>
 
-        <button type="submit">Genera Preventivo</button>
-    </form>
+            <div class="form-group">
+                <label for="seo">Ottimizzazione SEO:</label>
+                <select class="form-select" id="seo" name="seo" required>
+                    <option value="no" data-prezzo="0" selected>No</option>
+                    <option value="si" data-prezzo="200">Sì (200€)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="hosting">Vuoi includere l'hosting?</label>
+                <select class="form-select" id="hosting" name="hosting" required>
+                    <option value="no" data-prezzo="0" selected>No</option>
+                    <option value="si" data-prezzo="100">Sì (100€)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="descrizione">Descrizione personalizzata:</label>
+                <textarea class="form-control" id="descrizione" name="descrizione" rows="3"
+                    placeholder="Aggiungi una descrizione personalizzata (opzionale)"></textarea>
+            </div>
+
+            <!-- Riepilogo dei costi -->
+            <div class="price-display">
+                <p>Totale preventivo: <span class="price-box" id="totalePreventivo">0€</span></p>
+            </div>
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-lg">Genera Preventivo</button>
+            </div>
+
+            <div class="d-grid mt-4">
+                <button type="button" class="btn btn-secondary btn-lg" id="gestionePrezziBtn">Gestisci i Prezzi</button>
+            </div>
+        </form>
+    </div>
+
+
+    <!-- Sidebar per la gestione dei prezzi -->
+    <div class="sidebar" id="priceSidebar">
+        <h4>Gestione dei Prezzi</h4>
+
+        <div class="form-group">
+            <label for="prezzoBlog">Prezzo Blog:</label>
+            <input type="number" class="form-control" id="prezzoBlog" value="500" onchange="aggiornaPrezzo('blog')">
+        </div>
+
+        <div class="form-group">
+            <label for="prezzoEcommerce">Prezzo E-commerce:</label>
+            <input type="number" class="form-control" id="prezzoEcommerce" value="1200"
+                onchange="aggiornaPrezzo('ecommerce')">
+        </div>
+
+        <div class="form-group">
+            <label for="prezzoPortfolio">Prezzo Portfolio:</label>
+            <input type="number" class="form-control" id="prezzoPortfolio" value="800"
+                onchange="aggiornaPrezzo('portfolio')">
+        </div>
+
+        <div class="form-group">
+            <label for="prezzoWordPress">Prezzo WordPress:</label>
+            <input type="number" class="form-control" id="prezzoWordPress" value="300"
+                onchange="aggiornaPrezzo('wordpress')">
+        </div>
+
+        <div class="form-group">
+            <label for="prezzoCodice">Prezzo Codice Personalizzato:</label>
+            <input type="number" class="form-control" id="prezzoCodice" value="600" onchange="aggiornaPrezzo('codice')">
+        </div>
+
+        <div class="form-group">
+            <label for="prezzoSEO">Prezzo SEO:</label>
+            <input type="number" class="form-control" id="prezzoSEO" value="200" onchange="aggiornaPrezzo('seo')">
+        </div>
+
+        <div class="form-group">
+            <label for="prezzoHosting">Prezzo Hosting:</label>
+            <input type="number" class="form-control" id="prezzoHosting" value="100"
+                onchange="aggiornaPrezzo('hosting')">
+        </div>
+
+        <button type="button" class="btn btn-primary mt-3" id="salvaPrezzi">Salva Prezzi</button>
+    </div>
+
+
+    <footer>
+        <p>&copy; 2024 Preventivi Web | Tutti i diritti riservati</p>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies (Popper.js, etc.) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        function toggleAltroInput() {
-            var tipoSito = document.getElementById("tipoSito").value;
-            var altroInput = document.getElementById("altroInput");
-            if (tipoSito === "altro") {
-                altroInput.style.display = "block";
-            } else {
-                altroInput.style.display = "none";
+        // Funzione per calcolare il preventivo totale
+        function calcolaPreventivo() {
+            var totale = 0;
+
+            // Prezzi di base
+            var tipoSito = document.getElementById('tipoSito');
+            var piattaforma = document.getElementById('piattaforma');
+            var seo = document.getElementById('seo');
+            var hosting = document.getElementById('hosting');
+
+            // Aggiungi i prezzi aggiornati
+            if (tipoSito.selectedOptions[0]) {
+                totale += parseInt(tipoSito.selectedOptions[0].getAttribute('data-prezzo')) || 0;
             }
+            if (piattaforma.selectedOptions[0]) {
+                totale += parseInt(piattaforma.selectedOptions[0].getAttribute('data-prezzo')) || 0;
+            }
+            if (seo.selectedOptions[0]) {
+                totale += parseInt(seo.selectedOptions[0].getAttribute('data-prezzo')) || 0;
+            }
+            if (hosting.selectedOptions[0]) {
+                totale += parseInt(hosting.selectedOptions[0].getAttribute('data-prezzo')) || 0;
+            }
+
+            document.getElementById('totalePreventivo').innerText = totale + '€';
         }
+
+        // Aggiungi listener per il cambiamento della piattaforma, SEO e Hosting
+        document.getElementById('tipoSito').addEventListener('change', function () {
+            calcolaPreventivo();
+            var altroInput = document.getElementById('altroInput');
+            if (this.value === 'altro') {
+                altroInput.style.display = 'block';
+            } else {
+                altroInput.style.display = 'none';
+            }
+        });
+
+        document.getElementById('piattaforma').addEventListener('change', calcolaPreventivo);
+        document.getElementById('seo').addEventListener('change', calcolaPreventivo);
+        document.getElementById('hosting').addEventListener('change', calcolaPreventivo);
+
+        // Gestione della sidebar per modificare i prezzi
+        document.getElementById('gestionePrezziBtn').addEventListener('click', function () {
+            var sidebar = document.getElementById('priceSidebar');
+            sidebar.style.display = sidebar.style.display === 'block' ? 'none' : 'block';
+        });
+
+        // Salva i prezzi aggiornati
+        document.getElementById('salvaPrezzi').addEventListener('click', function () {
+            // Aggiorna i data-prezzo delle opzioni
+            var prezzoBlog = document.getElementById('prezzoBlog').value;
+            var prezzoEcommerce = document.getElementById('prezzoEcommerce').value;
+            var prezzoPortfolio = document.getElementById('prezzoPortfolio').value;
+            var prezzoWordPress = document.getElementById('prezzoWordPress').value;
+            var prezzoCodice = document.getElementById('prezzoCodice').value;
+            var prezzoSEO = document.getElementById('prezzoSEO').value;
+            var prezzoHosting = document.getElementById('prezzoHosting').value;
+
+            document.querySelector('#tipoSito option[value="blog"]').setAttribute('data-prezzo', prezzoBlog);
+            document.querySelector('#tipoSito option[value="e-commerce"]').setAttribute('data-prezzo', prezzoEcommerce);
+            document.querySelector('#tipoSito option[value="portfolio"]').setAttribute('data-prezzo', prezzoPortfolio);
+            document.querySelector('#piattaforma option[value="WordPress"]').setAttribute('data-prezzo', prezzoWordPress);
+            document.querySelector('#piattaforma option[value="Codice personalizzato"]').setAttribute('data-prezzo', prezzoCodice);
+            document.querySelector('#seo option[value="si"]').setAttribute('data-prezzo', prezzoSEO);
+            document.querySelector('#hosting option[value="si"]').setAttribute('data-prezzo', prezzoHosting);
+
+            // Aggiorna il testo delle opzioni
+            document.querySelector('#seo option[value="si"]').textContent = `Sì (${prezzoSEO}€)`;
+            document.querySelector('#tipoSito option[value="blog"]').textContent = `Blog (${prezzoBlog}€)`;
+            document.querySelector('#tipoSito option[value="e-commerce"]').textContent = `E-commerce (${prezzoEcommerce}€)`;
+            document.querySelector('#tipoSito option[value="portfolio"]').textContent = `Portfolio (${prezzoPortfolio}€)`;
+            document.querySelector('#piattaforma option[value="WordPress"]').textContent = `WordPress (${prezzoWordPress}€)`;
+            document.querySelector('#piattaforma option[value="Codice personalizzato"]').textContent = `Codice personalizzato (${prezzoCodice}€)`;
+            document.querySelector('#hosting option[value="si"]').textContent = `Sì (${prezzoHosting}€)`;
+
+            alert('Prezzi salvati con successo!');
+            calcolaPreventivo();
+            document.getElementById('priceSidebar').style.display = 'none';
+        });
     </script>
+
 </body>
 
 </html>
