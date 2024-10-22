@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preventivo Sito Web</title>
+</head>
+
+<body>
+    <h1>Preventivo per Sviluppatori Web</h1>
+    <form action="/submit" method="POST">
+        <label for="nomeCliente">Nome del cliente:</label>
+        <input type="text" id="nomeCliente" name="nomeCliente" required><br><br>
+
+        <label for="tipoSito">Tipo di sito:</label>
+        <select id="tipoSito" name="tipoSito" onchange="toggleAltroInput()" required>
+            <option value="blog">Blog</option>
+            <option value="e-commerce">E-commerce</option>
+            <option value="portfolio">Portfolio</option>
+            <option value="altro">Altro</option>
+        </select><br><br>
+
+        <div id="altroInput" style="display:none;">
+            <label for="specificaAltro">Specifica del sito:</label>
+            <input type="text" id="specificaAltro" name="specificaAltro"><br><br>
+        </div>
+
+        <label for="piattaforma">Piattaforma:</label>
+        <input type="radio" id="wordpress" name="piattaforma" value="WordPress" required>
+        <label for="wordpress">WordPress</label>
+        <input type="radio" id="codice" name="piattaforma" value="Codice" required>
+        <label for="codice">Codice normale</label><br><br>
+
+        <label for="seo">SEO:</label>
+        <input type="radio" id="seo_si" name="seo" value="si" required>
+        <label for="seo_si">Sì</label>
+        <input type="radio" id="seo_no" name="seo" value="no" required>
+        <label for="seo_no">No</label><br><br>
+
+        <label for="hosting">Gestione hosting:</label>
+        <input type="radio" id="hosting_si" name="hosting" value="si" required>
+        <label for="hosting_si">Sì</label>
+        <input type="radio" id="hosting_no" name="hosting" value="no" required>
+        <label for="hosting_no">No</label><br><br>
+
+        <label for="descrizione">Descrizione del progetto:</label><br>
+        <textarea id="descrizione" name="descrizione" rows="4" cols="50"
+            placeholder="Inserisci una descrizione del progetto..."></textarea><br><br>
+
+        <button type="submit">Genera Preventivo</button>
+    </form>
+
+    <script>
+        function toggleAltroInput() {
+            var tipoSito = document.getElementById("tipoSito").value;
+            var altroInput = document.getElementById("altroInput");
+            if (tipoSito === "altro") {
+                altroInput.style.display = "block";
+            } else {
+                altroInput.style.display = "none";
+            }
+        }
+    </script>
+</body>
+
+</html>
