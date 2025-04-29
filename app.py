@@ -4,7 +4,6 @@ from docx.shared import Pt
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from datetime import datetime
 import os
-import base64
 
 # Funzione per generare un nome di file univoco
 def generate_unique_filename(nome_cliente):
@@ -17,8 +16,22 @@ def add_empty_line(paragraph, count=1):
         run = paragraph.add_run()
         run.add_break()
 
-# Funzione per creare il file docx del preventivo
-def create_preventivo_docx(nome_cliente, tipo_sito, piattaforma, seo, hosting, altro_sito, descrizione_personalizzata, totale, costo_base, costo_piattaforma, costo_sito, costo_seo, costo_hosting):
+# Funzione per creare il preventivo
+def create_document(nome_cliente, tipo_sito, piattaforma, seo, hosting, altro_sito, descrizione_personalizzata):
+    # Calcolo del preventivo
+    costo_base = 500
+    costo_piattaforma = 300 if piattaforma == "WordPress" else 600
+    costo_sito = {
+        'blog': 200,
+        'e-commerce': 1000,
+        'portfolio': 400,
+        'altro': 600
+    }.get(tipo_sito, 0)
+    costo_seo = 200 if seo == "si" else 0
+    costo_hosting = 100 if hosting == "si" else 0
+
+    totale = costo_base + costo_piattaforma + costo_sito + costo_seo + costo_hosting
+
     # Creazione documento Word
     filename = generate_unique_filename(nome_cliente)
     document = Document()
@@ -51,13 +64,6 @@ def create_preventivo_docx(nome_cliente, tipo_sito, piattaforma, seo, hosting, a
     hdr_cells[1].text = 'Quantità'
     hdr_cells[2].text = 'Prezzo'
     hdr_cells[3].text = 'Subtotale'
-
-    # Riga 0 (costo base)
-    row_cells = table.add_row().cells
-    row_cells[0].text = 'Costo base'
-    row_cells[1].text = '1'
-    row_cells[2].text = f'{costo_base}€'
-    row_cells[3].text = f'{costo_base}€'
 
     # Riga 1
     row_cells = table.add_row().cells
@@ -102,104 +108,32 @@ def create_preventivo_docx(nome_cliente, tipo_sito, piattaforma, seo, hosting, a
 
     # Salva il documento
     document.save(filename)
+
     return filename
 
-# Funzione per consentire il download del file
-def get_binary_file_downloader_html(bin_file, file_label='File'):
-    with open(bin_file, 'rb') as f:
-        data = f.read()
-    b64 = base64.b64encode(data).decode()
-    href = f'<a href="data:application/octet-stream;base64,{b64}" download="{os.path.basename(bin_file)}">{file_label}</a>'
-    return href
+# Streamlit UI
+st.title('Genera il tuo Preventivo')
 
-# Interfaccia utente Streamlit
-st.set_page_config(page_title="Generatore Preventivi", page_icon="💰", layout="wide")
+# Input dell'utente tramite Streamlit
+nome_cliente = st.text_input('Nome Cliente')
 
-# Titolo dell'app
-st.title("Generatore di Preventivi")
-st.subheader("Compila il form per generare un preventivo personalizzato")
+tipo_sito = st.selectbox('Tipo di Sito', ['blog', 'e-commerce', 'portfolio', 'altro'])
+piattaforma = st.selectbox('Piattaforma', ['WordPress', 'Codice personalizzato'])
+seo = st.selectbox('SEO', ['si', 'no'])
+hosting = st.selectbox('Hosting', ['si', 'no'])
+altro_sito = st.text_input('Altro tipo di sito (selezionato "altro")')
+descrizione_personalizzata = st.text_area('Descrizione personalizzata')
 
-# Form per la raccolta dati
-with st.form("preventivo_form"):
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        nome_cliente = st.text_input("Nome Cliente", placeholder="Inserisci il nome del cliente")
-        tipo_sito = st.selectbox("Tipo di Sito", options=["blog", "e-commerce", "portfolio", "altro"])
-        if tipo_sito == "altro":
-            altro_sito = st.text_input("Specifica altro tipo di sito")
-        else:
-            altro_sito = ""
-        
-        piattaforma = st.selectbox("Piattaforma", options=["WordPress", "Da zero"])
-    
-    with col2:
-        seo = st.radio("SEO", options=["si", "no"])
-        hosting = st.radio("Hosting", options=["si", "no"])
-        descrizione_personalizzata = st.text_area("Descrizione Personalizzata", placeholder="Aggiungi dettagli o note specifiche...")
-    
-    # Bottone per generare il preventivo
-    submitted = st.form_submit_button("Genera Preventivo")
-    
-    if submitted:
-        # Calcolo del preventivo
-        costo_base = 500
-        costo_piattaforma = 300 if piattaforma == "WordPress" else 600
-        costo_sito = {
-            'blog': 200,
-            'e-commerce': 1000,
-            'portfolio': 400,
-            'altro': 600
-        }.get(tipo_sito, 0)
-        costo_seo = 200 if seo == "si" else 0
-        costo_hosting = 100 if hosting == "si" else 0
-
-        totale = costo_base + costo_piattaforma + costo_sito + costo_seo + costo_hosting
-        
-        # Genera documento
-        filename = create_preventivo_docx(
-            nome_cliente, tipo_sito, piattaforma, seo, hosting, 
-            altro_sito, descrizione_personalizzata, 
-            totale, costo_base, costo_piattaforma, costo_sito, costo_seo, costo_hosting
+# Bottone per generare il preventivo
+if st.button('Genera Preventivo'):
+    if nome_cliente:
+        filename = create_document(nome_cliente, tipo_sito, piattaforma, seo, hosting, altro_sito, descrizione_personalizzata)
+        st.success(f"Preventivo generato per {nome_cliente}!")
+        st.download_button(
+            label="Scarica il preventivo",
+            data=open(filename, 'rb').read(),
+            file_name=filename,
+            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         )
-        
-        # Mostra il riepilogo del preventivo
-        st.success(f"Preventivo per {nome_cliente} generato con successo!")
-        
-        # Mostra una card con il riepilogo
-        st.subheader("Riepilogo del preventivo")
-        
-        col1, col2 = st.columns(2)
-        with col1:
-            st.markdown(f"**Cliente:** {nome_cliente}")
-            st.markdown(f"**Tipo di sito:** {tipo_sito}")
-            st.markdown(f"**Piattaforma:** {piattaforma}")
-        
-        with col2:
-            st.markdown(f"**SEO:** {seo}")
-            st.markdown(f"**Hosting:** {hosting}")
-            st.markdown(f"**Totale:** €{totale}")
-        
-        # Aggiungi dettagli costi
-        with st.expander("Dettaglio costi"):
-            st.markdown(f"- Costo base: €{costo_base}")
-            st.markdown(f"- Costo sito {tipo_sito}: €{costo_sito}")
-            st.markdown(f"- Costo piattaforma {piattaforma}: €{costo_piattaforma}")
-            st.markdown(f"- Costo SEO: €{costo_seo}")
-            st.markdown(f"- Costo hosting: €{costo_hosting}")
-        
-        # Offri download del file
-        st.markdown("### Download")
-        st.markdown(get_binary_file_downloader_html(filename, 'Scarica il documento Word'), unsafe_allow_html=True)
-        
-        # Aggiungi opzione per eliminare il file dopo il download
-        if st.button("Elimina file dopo il download"):
-            try:
-                os.remove(filename)
-                st.success("File eliminato con successo!")
-            except:
-                st.error("Errore nell'eliminazione del file.")
-
-# Footer
-st.markdown("---")
-st.markdown("© 2025 - Generatore di Preventivi")
+    else:
+        st.error("Per favore, inserisci il nome del cliente.")
