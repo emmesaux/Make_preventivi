@@ -10,13 +10,7 @@ def generate_unique_filename(nome_cliente):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     return f'{timestamp}_{nome_cliente}.docx'
 
-# Funzione per aggiungere una linea vuota
-def add_empty_line(paragraph, count=1):
-    for _ in range(count):
-        run = paragraph.add_run()
-        run.add_break()
-
-# Funzione per creare il preventivo
+# Funzione per creare il documento
 def create_document(nome_cliente, tipo_sito, piattaforma, seo, hosting, altro_sito, descrizione_personalizzata):
     # Calcolo del preventivo
     costo_base = 500
@@ -111,8 +105,17 @@ def create_document(nome_cliente, tipo_sito, piattaforma, seo, hosting, altro_si
 
     return filename
 
+# Carica il template HTML
+def load_html_template():
+    with open("templates/preventivo.html", "r") as file:
+        return file.read()
+
 # Streamlit UI
 st.title('Genera il tuo Preventivo')
+
+# Visualizza l'HTML del template
+html_template = load_html_template()
+st.markdown(html_template, unsafe_allow_html=True)
 
 # Input dell'utente tramite Streamlit
 nome_cliente = st.text_input('Nome Cliente')
